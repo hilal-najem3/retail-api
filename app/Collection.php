@@ -20,6 +20,11 @@ class Collection extends Model
         'parent_id',
     ];
 
+    public function products()
+    {
+        return $this->hasMany('App\Product');
+    }
+
     public function user()
     {
         return $this->belongsTo('App\User');
