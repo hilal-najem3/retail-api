@@ -30,4 +30,9 @@ class Sale extends Model
 
         return $this->percentage;
     }
+
+    public function collections()
+    {
+        return $this->hasMany('App\Collection');
+    }
 }

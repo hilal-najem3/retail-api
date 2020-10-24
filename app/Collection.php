@@ -19,4 +19,24 @@ class Collection extends Model
         'sale_id', 'user_id',
         'parent_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
+    public function sale()
+    {
+        return $this->belongsTo('App\Sale');
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany('App\Category');
+    }
+
+    public function images()
+    {
+        return $this->hasMany('App\Image');
+    }
 }

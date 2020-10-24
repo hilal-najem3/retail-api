@@ -48,6 +48,11 @@ class User extends Authenticatable
         return $this->belongsToMany('\App\Role');
     }
 
+    public function collections()
+    {
+        return $this->hasMany('App\Collection');
+    }
+
     public function AauthAcessToken()
     {
         return $this->hasMany('\App\OauthAccessToken');

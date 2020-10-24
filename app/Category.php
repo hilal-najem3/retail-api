@@ -14,4 +14,9 @@ class Category extends Model
     protected $fillable = [
         'name', 'parent_id'
     ];
+
+    public function collections()
+    {
+        return $this->hasMany('App\Collection');
+    }
 }

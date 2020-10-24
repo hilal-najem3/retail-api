@@ -18,6 +18,11 @@ class Image extends Model
         'link', 'image_type_id'
     ];
 
+    public function collection()
+    {
+        return $this->belongsTo('App\Collection');
+    }
+
     public function type()
     {
         return $this->belongsTo(ImageType::class, 'image_type_id');
