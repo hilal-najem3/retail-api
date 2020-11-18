@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
@@ -22,18 +23,25 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email|exists:users,email', 
-            'password' => 'required'
-        ]);
+        $data = $request->all();
+
+        $this->validator($data)->validate();
 
         if( Auth::attempt(['email'=>$request->email, 'password'=>$request->password]) ) {
             $user = Auth::user();
 
             $token = $user->createToken($user->email.'-'.now());
 
+            $userData = [
+                'id' => $user->id,
+                'first_name' => $user->first_name, 
+                'last_name' => $user->last_name,
+                'email' => $user->email
+            ];
+
             return response()->json([
-                'token' => $token->accessToken
+                'token' => $token->accessToken,
+                'user' => $userData
             ]);
         }
     }
@@ -46,6 +54,20 @@ class AuthController extends Controller
 
         return response()->json([
             'msg' => 'Logged out complete'
+        ]);
+    }
+
+    /**
+     * Get a validator for an incoming request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'email' => 'required|email|exists:users,email', 
+            'password' => 'required'
         ]);
     }
 }
