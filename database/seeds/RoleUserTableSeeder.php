@@ -3,9 +3,9 @@
 use Illuminate\Database\Seeder;
 use App\Role;
 use App\User;
-use App\UserRole;
+use App\RoleUser;
 
-class UserRolesTableSeeder extends Seeder
+class RoleUserTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -18,7 +18,7 @@ class UserRolesTableSeeder extends Seeder
 
         $role = Role::first();
 
-        UserRole::create([
+        RoleUser::create([
         	'user_id' => $user->id,
         	'role_id' => $role->id
         ]);

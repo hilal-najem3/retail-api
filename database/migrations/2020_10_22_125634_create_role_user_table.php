@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserRolesTable extends Migration
+class CreateRoleUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateUserRolesTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_roles', function (Blueprint $table) {
+        Schema::create('role_user', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id')->nullable()->onDelete('cascade');
             $table->unsignedBigInteger('role_id')->nullable()->onDelete('cascade');
 
@@ -31,10 +31,10 @@ class CreateUserRolesTable extends Migration
      */
     public function down()
     {
-        Schema::table('user_roles', function($table)
+        Schema::table('role_user', function($table)
         {
             $table->dropForeign(['user_id', 'role_id']);
         });
-        Schema::dropIfExists('user_roles');
+        Schema::dropIfExists('role_user');
     }
 }
