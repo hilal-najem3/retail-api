@@ -21,3 +21,7 @@ Route::post('logout','Auth\AuthController@logout');
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::middleware('auth:api', 'Admin')->group(function () {
+    Route::resource('admin/categories', 'Admin\CategoriesController');
+});
