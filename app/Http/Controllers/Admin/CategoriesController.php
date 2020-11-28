@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Category;
+use Illuminate\Support\Facades\Validator;
 
 class CategoriesController extends Controller
 {
@@ -38,7 +39,50 @@ class CategoriesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+
+        $categoryData = [
+            'name' => $data['name'],
+        ];
+
+        if (isset($data['active'])) {
+            if ($data['active'] == "True") {
+                $categoryData['active'] = true;
+            } else {
+                $categoryData['active'] = false;
+            }
+        } else {
+            $categoryData['active'] = false;
+        }
+
+        try {
+            if (isset($data['parent'])) {
+               $categoryData['parent_id'] = (int)$data['parent'];
+            }
+        } catch(Exception $e) {
+
+        }
+
+        $this->validator($categoryData)->validate();
+
+        $category = Category::create($categoryData);
+
+        return response()->json('Category Created', 200);
+    }
+
+    /**
+     * Get a validator for an incoming request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => 'required|unique:categories,name',
+            'parent_id' => 'nullable|exists:categories,id',
+            'active' => 'required|bool',
+        ]);
     }
 
     /**
@@ -49,7 +93,13 @@ class CategoriesController extends Controller
      */
     public function show($id)
     {
-        //
+        $category = Category::find($id);
+
+        if ($category != null) {
+           return response()->json($category, 200);
+        }
+
+        return response()->json("Not Found", 404);
     }
 
     /**
