@@ -86,6 +86,20 @@ class CategoriesController extends Controller
     }
 
     /**
+     * Get a validator for an incoming request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function UpdateValidator(array $data)
+    {
+        return Validator::make($data, [
+            'parent_id' => 'nullable|exists:categories,id',
+            'active' => 'required|bool',
+        ]);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -122,7 +136,53 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->all();
+
+        $category = Category::findorfail($id);
+
+        $categoryData = [
+            'name' => $data['name'],
+        ];
+
+        if (isset($data['active'])) {
+            if ($data['active'] == "True") {
+                $categoryData['active'] = true;
+            } else {
+                $categoryData['active'] = false;
+            }
+        } else {
+            $categoryData['active'] = false;
+        }
+
+        try {
+            if (isset($data['parent'])) {
+               $categoryData['parent_id'] = (int)$data['parent'];
+            } else {
+                $categoryData['parent_id'] = null;
+            }
+        } catch(Exception $e) {
+
+        }
+
+        $this->UpdateValidator($categoryData)->validate();
+
+        if ($categoryData['name'] != $category->name) {
+            $this->validate($request, [
+                'name' => 'required|unique:categories,name',
+            ]);
+
+            $category->name = $categoryData['name'];
+        }
+
+        $category->active = $categoryData['active'];
+
+        if ($categoryData['parent_id'] != null) {
+            $category->parent_id = $categoryData['parent_id'];
+        }
+
+        $category->save();
+
+        return response()->json("Category Updated", 200);
     }
 
     /**
