@@ -23,5 +23,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:api', 'Admin')->group(function () {
+
+	// Users Management
+	Route::resource('admin/users', 'Admin\UsersController');
+
+	// Categories Management
     Route::resource('admin/categories', 'Admin\CategoriesController');
 });
